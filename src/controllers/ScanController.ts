@@ -16,26 +16,82 @@ export class ScanController {
     try {
       const { html, sendEmail = false }: ScanRequest = req.body;
       
-      if (!html) {
-        res.status(400).json({ error: 'HTML content is required' });
+      // Validate input
+      if (!html || typeof html !== 'string') {
+        res.status(400).json({
+          error: 'Invalid request',
+          message: 'HTML content is required and must be a string',
+          timestamp: new Date().toISOString()
+        });
         return;
       }
 
+      if (html.trim().length === 0) {
+        res.status(400).json({
+          error: 'Invalid request',
+          message: 'HTML content cannot be empty',
+          timestamp: new Date().toISOString()
+        });
+        return;
+      }
+
+      // Check HTML size limit
+      if (html.length > 1024 * 1024) { // 1MB limit
+        res.status(413).json({
+          error: 'Payload too large',
+          message: 'HTML content exceeds 1MB limit',
+          timestamp: new Date().toISOString()
+        });
+        return;
+      }
+
+      console.log('Starting accessibility scan', {
+        htmlLength: html.length,
+        sendEmail: sendEmail || false,
+        timestamp: new Date().toISOString()
+      });
+
+      const startTime = Date.now();
       const results: ScanResult = await this.scanner.scanHtml({ html, sendEmail });
+      const duration = Date.now() - startTime;
+
+      console.log('Accessibility scan completed', {
+        duration: `${duration}ms`,
+        violationsCount: results.violations?.length || 0,
+        passesCount: results.passes?.length || 0,
+        incompleteCount: results.incomplete?.length || 0,
+        inapplicableCount: results.inapplicable?.length || 0
+      });
 
       if (sendEmail) {
         try {
           await this.sendReportEmail(results, html);
+          console.log('Report email sent successfully');
         } catch (emailError) {
           console.error('Failed to send report email:', emailError);
+          // Don't fail the request if email sending fails
         }
       }
 
-      res.json(results);
+      res.json({
+        ...results,
+        metadata: {
+          scanDuration: duration,
+          timestamp: new Date().toISOString(),
+          htmlLength: html.length,
+          emailSent: sendEmail
+        }
+      });
     } catch (error) {
-      console.error('Scan error:', error);
-      res.status(500).json({ 
-        error: `Failed to scan HTML: ${error instanceof Error ? error.message : 'Unknown error'}` 
+      console.error('Scan controller error:', error);
+      
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const statusCode = errorMessage.includes('timeout') ? 408 : 500;
+
+      res.status(statusCode).json({
+        error: 'Scan failed',
+        message: errorMessage,
+        timestamp: new Date().toISOString()
       });
     }
   }

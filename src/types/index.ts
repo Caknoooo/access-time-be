@@ -13,6 +13,7 @@ export interface ScanResult {
   incomplete: AccessibilityIncomplete[];
   inapplicable: AccessibilityInapplicable[];
   sampleInfo?: EmailSample;
+  error?: string;
 }
 
 export interface AccessibilityViolation {
