@@ -11,7 +11,7 @@ export interface EmailEvent {
 export class EmailListenerService {
   private mailHogService: MailHogService;
   private accessibilityScanner: AccessibilityScanner;
-  private clients: Set<express.Response> = new Set();
+  private clients: Set<any> = new Set();
   private lastEmailId: string | null = null;
   private isPolling: boolean = false;
   private pollingInterval: NodeJS.Timeout | null = null;
@@ -21,7 +21,7 @@ export class EmailListenerService {
     this.accessibilityScanner = new AccessibilityScanner();
   }
 
-  addClient(res: express.Response): void {
+  addClient(res: any): void {
     this.clients.add(res);
     
     // Send initial status
@@ -119,7 +119,7 @@ export class EmailListenerService {
     console.log('Stopped email polling - no active clients');
   }
 
-  private sendToClient(res: express.Response, event: EmailEvent): void {
+  private sendToClient(res: any, event: EmailEvent): void {
     try {
       res.write(`data: ${JSON.stringify(event)}\n\n`);
     } catch (error) {
@@ -129,7 +129,7 @@ export class EmailListenerService {
   }
 
   private broadcast(event: EmailEvent): void {
-    const deadClients: express.Response[] = [];
+    const deadClients: any[] = [];
     
     this.clients.forEach(client => {
       try {
