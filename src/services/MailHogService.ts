@@ -5,6 +5,11 @@ export class MailHogService {
   private readonly apiUrl: string;
 
   constructor() {
+    console.log('MailHog Config:', {
+      host: process.env.MAILHOG_HOST,
+      webPort: process.env.MAILHOG_WEB_PORT,
+      smtpPort: process.env.MAILHOG_SMTP_PORT
+    });
     this.apiUrl = `http://${process.env.MAILHOG_HOST}:${process.env.MAILHOG_WEB_PORT}/api/v2`;
   }
 
@@ -20,18 +25,24 @@ export class MailHogService {
       const latestEmail = messages[0];
       
       let htmlContent = '';
+      
       if (latestEmail.MIME && latestEmail.MIME.Parts) {
-        const htmlPart = latestEmail.MIME.Parts.find((part: any) => 
-          part.Headers && part.Headers['Content-Type'] && 
-          part.Headers['Content-Type'][0].includes('text/html')
-        );
+        const htmlPart = latestEmail.MIME.Parts.find((part: any) => {
+          const contentType = part.Headers && part.Headers['Content-Type'] ? part.Headers['Content-Type'][0] : '';
+          return contentType.includes('text/html');
+        });
+        
         if (htmlPart) {
           htmlContent = htmlPart.Body || '';
         }
       }
       
-      if (!htmlContent) {
-        htmlContent = latestEmail.Body || '';
+      if (!htmlContent && latestEmail.Body) {
+        htmlContent = latestEmail.Body;
+      }
+      
+      if (!htmlContent && latestEmail.Content && latestEmail.Content.Body) {
+        htmlContent = latestEmail.Content.Body;
       }
       
       htmlContent = htmlContent
@@ -39,6 +50,34 @@ export class MailHogService {
         .replace(/\\n/g, '\n')
         .replace(/\\"/g, '"')
         .replace(/\\t/g, '\t');
+      
+      if (!htmlContent || htmlContent.trim().length === 0) {
+        let textContent = '';
+        if (latestEmail.MIME && latestEmail.MIME.Parts) {
+          const textPart = latestEmail.MIME.Parts.find((part: any) => {
+            const contentType = part.Headers && part.Headers['Content-Type'] ? part.Headers['Content-Type'][0] : '';
+            return contentType.includes('text/plain');
+          });
+          if (textPart) {
+            textContent = textPart.Body || '';
+          }
+        }
+        
+        if (!textContent && latestEmail.Content && latestEmail.Content.Body) {
+          textContent = latestEmail.Content.Body;
+        }
+        
+        if (textContent) {
+          htmlContent = `<html><body><pre>${textContent.replace(/\n/g, '<br>')}</pre></body></html>`;
+        } else {
+          return {
+            hasNewEmail: true,
+            emailId: latestEmail.ID,
+            htmlContent: '',
+            subject: latestEmail.Content?.Headers?.Subject?.[0] || 'Test Email'
+          };
+        }
+      }
       
       return {
         hasNewEmail: true,
@@ -55,7 +94,7 @@ export class MailHogService {
     try {
       const nodemailer = require('nodemailer');
       
-      const transporter = nodemailer.createTransporter({
+      const transporter = nodemailer.createTransport({
         host: process.env.MAILHOG_HOST,
         port: Number(process.env.MAILHOG_SMTP_PORT),
         secure: process.env.SMTP_SECURE === 'true',
@@ -73,3 +112,4 @@ export class MailHogService {
     }
   }
 }
+

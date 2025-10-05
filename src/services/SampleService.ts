@@ -49,7 +49,7 @@ export class SampleService {
 
       const nodemailer = require('nodemailer');
       
-      const transporter = nodemailer.createTransporter({
+      const transporter = nodemailer.createTransport({
         host: process.env.MAILHOG_HOST,
         port: Number(process.env.MAILHOG_SMTP_PORT),
         secure: process.env.SMTP_SECURE === 'true',
