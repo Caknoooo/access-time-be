@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comprehensive Accessibility Test</title>
+  </head>
+  <body>
+    <h1>Comprehensive Accessibility Testing Page</h1>
+
+    <!-- Multiple images without alt text -->
+    <img src="hero-banner.jpg" />
+    <img src="product-gallery-1.jpg" />
+    <img src="product-gallery-2.jpg" />
+    <img src="user-avatar.png" />
+
+    <!-- Complex form with many accessibility issues -->
+    <form>
+      <h2>User Registration</h2>
+
+      <input type="text" placeholder="First name" />
+      <input type="text" placeholder="Last name" />
+      <input type="email" placeholder="Email address" />
+      <input type="password" placeholder="Password" />
+      <input type="password" placeholder="Confirm password" />
+      <input type="tel" placeholder="Phone number" />
+      <input type="date" />
+      <input type="file" />
+      <input type="search" />
+
+      <!-- Radio buttons without labels -->
+      <input type="radio" name="gender" value="male" />
+      <input type="radio" name="gender" value="female" />
+      <input type="radio" name="gender" value="other" />
+
+      <!-- Checkboxes without labels -->
+      <input type="checkbox" name="newsletter" />
+      <input type="checkbox" name="promotions" />
+      <input type="checkbox" name="partners" />
+
+      <!-- Select without label -->
+      <select>
+        <option>Country</option>
+        <option>Indonesia</option>
+        <option>Malaysia</option>
+        <option>Singapore</option>
+        <option>Thailand</option>
+        <option>Australia</option>
+      </select>
+
+      <!-- Textarea without label -->
+      <textarea placeholder="Comments"></textarea>
+
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
+    </form>
+
+    <!-- Multiple tables without proper headers -->
+    <table>
+      <tr>
+        <td>Product</td>
+        <td>Price</td>
+        <td>Category</td>
+      </tr>
+      <tr>
+        <td>Laptop</td>
+        <td>$999</td>
+        <td>Electronics</td>
+      </tr>
+    </table>
+
+    <!-- Many generic links -->
+    <p>
+      <a href="#">Click here</a> for more information.
+      <a href="#">Read more</a> about our services. <a href="#">Download</a> the
+      PDF. <a href="#">Learn more</a> about pricing.
+      <a href="#">Contact us</a> for support. <a href="#">Sign up</a> for
+      updates. <a href="#">View all</a> products.
+      <a href="#">Get started</a> today.
+    </p>
+
+    <!-- Color contrast issues -->
+    <div style="color: #ffffff; background-color: #ffffff; padding: 15px">
+      White text on white background - invisible
+    </div>
+    <div style="color: #cccccc; background-color: #f0f0f0; padding: 15px">
+      Light gray text on light background - poor contrast
+    </div>
+    <div style="color: #ff0000; background-color: #ff0000; padding: 15px">
+      Red text on red background - invisible
+    </div>
+    <div style="color: #0000ff; background-color: #0000ff; padding: 15px">
+      Blue text on blue background - invisible
+    </div>
+
+    <!-- Content with very small fonts -->
+    <div style="font-size: 6px">
+      <p>This text is extremely small and unreadable</p>
+    </div>
+    <div style="font-size: 8px">
+      <p>This text is also very small</p>
+    </div>
+    <div style="font-size: 10px">
+      <p>This text is still too small for comfortable reading</p>
+    </div>
+
+    <!-- Hidden content that should be accessible -->
+    <div style="display: none">
+      <p>Hidden content that should be accessible to screen readers</p>
+      <a href="#">Hidden link</a>
+    </div>
+
+    <!-- Content with visibility hidden -->
+    <div style="visibility: hidden">
+      <p>Content with visibility hidden</p>
+    </div>
+
+    <!-- Content with opacity 0 -->
+    <div style="opacity: 0">
+      <p>Content with opacity 0</p>
+    </div>
+
+    <!-- Auto-playing media -->
+    <video autoplay muted loop>
+      <source src="background-video.mp4" type="video/mp4" />
+    </video>
+    <audio autoplay loop>
+      <source src="background-music.mp3" type="audio/mpeg" />
+    </audio>
+
+    <!-- Content that moves automatically -->
+    <div style="animation: move 2s infinite">
+      <p>This text moves automatically</p>
+    </div>
+
+    <!-- Content that blinks -->
+    <div style="animation: blink 1s infinite">
+      <p>This text blinks</p>
+    </div>
+
+    <!-- Buttons without accessible names -->
+    <button>Valid Button</button>
+    <button></button>
+    <button><span>Icon only</span></button>
+    <button><img src="icon.png" /></button>
+
+    <!-- Poor heading hierarchy -->
+    <h1>Main Title</h1>
+    <h4>Jumped heading</h4>
+    <h2>Subtitle</h2>
+    <h6>Another jump</h6>
+    <h3>Section</h3>
+
+    <style>
+      @keyframes move {
+        0% {
+          transform: translateX(0);
+        }
+        50% {
+          transform: translateX(100px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </body>
+</html>

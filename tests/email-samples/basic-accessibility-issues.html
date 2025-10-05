@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Accessibility Issues</title>
+  </head>
+  <body>
+    <h1>Welcome to Our Website</h1>
+
+    <!-- Images without alt text -->
+    <img src="logo.png" />
+    <img src="banner.jpg" />
+
+    <!-- Form without labels -->
+    <form>
+      <input type="text" placeholder="Name" />
+      <input type="email" placeholder="Email" />
+      <button type="submit">Submit</button>
+    </form>
+
+    <!-- Buttons without accessible text -->
+    <button></button>
+    <button><span class="icon"></span></button>
+
+    <!-- Poor heading structure -->
+    <h1>Main Title</h1>
+    <h4>Skipped heading levels</h4>
+    <h2>Subtitle</h2>
+    <h6>Another skipped level</h6>
+
+    <!-- Generic links -->
+    <p>
+      <a href="#">Click here</a> to learn more about our products.
+      <a href="#">Read more</a> about our company.
+    </p>
+  </body>
+</html>

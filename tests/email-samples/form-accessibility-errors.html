@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Accessibility Errors</title>
+  </head>
+  <body>
+    <h1>Registration Form</h1>
+
+    <form>
+      <!-- Various input types without labels -->
+      <input type="text" placeholder="Full name" />
+      <input type="email" placeholder="Email address" />
+      <input type="tel" placeholder="Phone number" />
+      <input type="password" placeholder="Password" />
+      <input type="number" placeholder="Age" />
+      <input type="file" />
+      <input type="search" />
+
+      <!-- Radio buttons without group labels -->
+      <input type="radio" name="gender" value="male" />
+      <input type="radio" name="gender" value="female" />
+      <input type="radio" name="gender" value="other" />
+
+      <!-- Checkboxes without labels -->
+      <input type="checkbox" name="newsletter" />
+      <input type="checkbox" name="promotions" />
+      <input type="checkbox" name="agree" />
+
+      <!-- Select without label -->
+      <select>
+        <option>Choose country</option>
+        <option>Indonesia</option>
+        <option>Malaysia</option>
+        <option>Singapore</option>
+        <option>Thailand</option>
+        <option>Australia</option>
+      </select>
+
+      <!-- Textarea without label -->
+      <textarea placeholder="Additional comments"></textarea>
+
+      <button type="submit">Register</button>
+      <button type="reset">Clear Form</button>
+    </form>
+
+    <!-- Table without headers -->
+    <table>
+      <tr>
+        <td>Product</td>
+        <td>Price</td>
+        <td>Stock</td>
+      </tr>
+      <tr>
+        <td>Laptop</td>
+        <td>$999</td>
+        <td>10</td>
+      </tr>
+    </table>
+
+    <!-- Multiple generic links -->
+    <p>
+      <a href="#">Click here</a> for more information.
+      <a href="#">Read more</a> about our services. <a href="#">Download</a> the
+      PDF. <a href="#">Learn more</a> about pricing.
+      <a href="#">Contact us</a> for support.
+    </p>
+  </body>
+</html>

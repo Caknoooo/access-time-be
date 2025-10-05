@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-commerce Accessibility Problems</title>
+  </head>
+  <body>
+    <h1>TechStore</h1>
+
+    <main>
+      <!-- Product information -->
+      <h2>Premium Wireless Headphones</h2>
+      <img src="headphones.jpg" />
+
+      <!-- Price without proper markup -->
+      <div style="font-size: 24px; color: #e74c3c">
+        $299.99
+        <span
+          style="text-decoration: line-through; color: #999; font-size: 16px"
+        >
+          $399.99
+        </span>
+      </div>
+
+      <!-- Product details without semantic structure -->
+      <div>
+        <h3>Description</h3>
+        <p>
+          These premium wireless headphones deliver exceptional sound quality
+          with noise cancellation technology.
+        </p>
+
+        <h3>Features</h3>
+        <ul>
+          <li>30-hour battery life</li>
+          <li>Active noise cancellation</li>
+          <li>Premium quality drivers</li>
+        </ul>
+      </div>
+
+      <!-- Review section without proper markup -->
+      <div>
+        <h3>Customer Reviews</h3>
+
+        <!-- Star rating without proper markup -->
+        <div>
+          <span>★★★★★</span>
+          <span>(127 reviews)</span>
+        </div>
+
+        <!-- Review form without labels -->
+        <form>
+          <h4>Write a Review</h4>
+          <input type="text" placeholder="Your name" />
+          <input type="email" placeholder="Your email" />
+
+          <!-- Rating without labels -->
+          <div>
+            <input type="radio" name="rating" value="5" />
+            <input type="radio" name="rating" value="4" />
+            <input type="radio" name="rating" value="3" />
+            <input type="radio" name="rating" value="2" />
+            <input type="radio" name="rating" value="1" />
+          </div>
+
+          <textarea placeholder="Your review"></textarea>
+          <button type="submit">Submit Review</button>
+        </form>
+      </div>
+
+      <!-- Related products -->
+      <div>
+        <h3>Related Products</h3>
+        <div style="display: flex; gap: 20px">
+          <div>
+            <img src="related1.jpg" />
+            <p>Bluetooth Speaker</p>
+            <p>$89.99</p>
+            <button>Add to Cart</button>
+          </div>
+          <div>
+            <img src="related2.jpg" />
+            <p>Smart Watch</p>
+            <p>$199.99</p>
+            <button>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div>
+        <h4>Company Info</h4>
+        <p>© 2024 TechStore. All rights reserved.</p>
+        <p>
+          Contact us: <a href="mailto:info@techstore.com">info@techstore.com</a>
+        </p>
+      </div>
+
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">Returns</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Follow Us</h4>
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </footer>
+
+    <!-- Hidden content that should be accessible -->
+    <div style="display: none">
+      <p>This content is hidden but should be accessible to screen readers</p>
+    </div>
+
+    <!-- Content with very small font -->
+    <div style="font-size: 8px">
+      <p>This text is extremely small and hard to read</p>
+    </div>
+
+    <!-- Auto-playing media -->
+    <div>
+      <h4>Promotional Video</h4>
+      <video autoplay muted loop>
+        <source src="promo.mp4" type="video/mp4" />
+      </video>
+    </div>
+  </body>
+</html>

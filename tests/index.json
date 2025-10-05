@@ -1,0 +1,36 @@
+{
+  "emailSamples": [
+    {
+      "id": "basic",
+      "name": "Basic Accessibility Issues",
+      "file": "basic-accessibility-issues.html",
+      "description": "Simple HTML with common accessibility problems: missing alt text, form labels, button text, and heading hierarchy.",
+      "features": ["Images without alt", "Form without labels", "Generic links", "Poor heading structure"],
+      "violationsExpected": 8
+    },
+    {
+      "id": "forms",
+      "name": "Form Accessibility Errors", 
+      "file": "form-accessibility-errors.html",
+      "description": "Complex form with multiple input types lacking proper labels and accessibility features.",
+      "features": ["All input types", "Radio buttons without labels", "Checkboxes without labels", "Select without label"],
+      "violationsExpected": 15
+    },
+    {
+      "id": "ecommerce",
+      "name": "E-commerce Accessibility Problems",
+      "file": "ecommerce-accessibility-problems.html", 
+      "description": "Real-world e-commerce page with pricing, reviews, and product information accessibility issues.",
+      "features": ["Product images", "Review forms", "Star ratings", "Related products", "Hidden content"],
+      "violationsExpected": 12
+    },
+    {
+      "id": "comprehensive",
+      "name": "Comprehensive Accessibility Test",
+      "file": "comprehensive-accessibility-test.html",
+      "description": "Extensive test page covering all accessibility issues including color contrast, autoplay media, and animations.",
+      "features": ["Color contrast issues", "Auto-playing media", "Moving/blinking content", "Very small text", "Hidden content"],
+      "violationsExpected": 20
+    }
+  ]
+}
