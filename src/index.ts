@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction, Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
@@ -10,7 +10,6 @@ import { EmailListenerService } from '@/services/EmailListenerService';
 
 dotenv.config();
 
-// Configure Winston logger
 const logger = createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: format.combine(
@@ -22,23 +21,17 @@ const logger = createLogger({
   transports: [
     new transports.File({ filename: 'logs/error.log' }),
     new transports.File({ filename: 'logs/combined.log' }),
-    new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.simple()
-      )
-    })
+    new transports.Console()
   ],
 });
 
-// Create logs directory if it doesn't exist
 import fs from 'fs';
 if (!fs.existsSync('logs')) {
   fs.mkdirSync('logs');
 }
 
 class App {
-  public app: express.Application;
+  public app: Application;
   private scanController: ScanController;
   private emailController: EmailController;
   private sampleController: SampleController;
@@ -57,7 +50,6 @@ class App {
   }
 
   private initializeMiddlewares(): void {
-    // Security middleware
     this.app.use(helmet({
       contentSecurityPolicy: {
         directives: {
@@ -69,7 +61,6 @@ class App {
       },
     }));
 
-    // CORS configuration
     this.app.use(cors({
       origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
       credentials: true,
@@ -77,10 +68,9 @@ class App {
       allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control']
     }));
 
-    // Body parsing middleware
     this.app.use(express.json({ 
       limit: '10mb',
-      verify: (req: express.Request, res: express.Response, buf: Buffer) => {
+      verify: (req: Request, res: Response, buf: Buffer) => {
         try {
           JSON.parse(buf.toString());
         } catch (e) {
@@ -91,8 +81,7 @@ class App {
     }));
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-    // Request logging middleware
-    this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
       const start = Date.now();
       res.on('finish', () => {
         const duration = Date.now() - start;
@@ -110,8 +99,7 @@ class App {
   }
 
   private initializeRoutes(): void {
-    // Health check endpoint
-    this.app.get('/health', (req, res) => {
+    this.app.get('/health', (req: Request, res: Response) => {
       res.json({ 
         status: 'OK', 
         timestamp: new Date().toISOString(),
@@ -121,8 +109,7 @@ class App {
       });
     });
 
-    // Server-Sent Events endpoint for real-time email monitoring
-    this.app.get('/api/events', (req, res) => {
+    this.app.get('/api/events', (req: Request, res: Response) => {
       try {
         res.writeHead(200, {
           'Content-Type': 'text/event-stream',
@@ -142,25 +129,23 @@ class App {
       }
     });
 
-    // API routes
-    this.app.post('/api/scan', (req, res) => {
+    this.app.post('/api/scan', (req: Request, res: Response) => {
       this.scanController.scanHtml(req, res);
     });
 
-    this.app.get('/api/emails', (req, res) => {
+    this.app.get('/api/emails', (req: Request, res: Response) => {
       this.emailController.checkForEmails(req, res);
     });
 
-    this.app.get('/api/test-samples', (req, res) => {
+    this.app.get('/api/test-samples', (req: Request, res: Response) => {
       this.sampleController.getSamples(req, res);
     });
 
-    this.app.post('/api/test-samples', (req, res) => {
+    this.app.post('/api/test-samples', (req: Request, res: Response) => {
       this.sampleController.handleSampleAction(req, res);
     });
 
-    // 404 handler
-    this.app.use('*', (req, res) => {
+    this.app.use('*', (req: Request, res: Response) => {
       logger.warn('Route not found', { method: req.method, url: req.originalUrl });
       res.status(404).json({ 
         error: 'Route not found',
@@ -171,8 +156,7 @@ class App {
   }
 
   private initializeErrorHandling(): void {
-    // Global error handler
-    this.app.use((error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    this.app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
       logger.error('Unhandled error', {
         error: error.message,
         stack: error.stack,
@@ -188,19 +172,16 @@ class App {
       });
     });
 
-    // Handle uncaught exceptions
     process.on('uncaughtException', (error) => {
       logger.error('Uncaught Exception', { error: error.message, stack: error.stack });
       process.exit(1);
     });
 
-    // Handle unhandled promise rejections
     process.on('unhandledRejection', (reason, promise) => {
       logger.error('Unhandled Rejection', { reason, promise });
       process.exit(1);
     });
 
-    // Graceful shutdown
     process.on('SIGTERM', () => {
       logger.info('SIGTERM received, shutting down gracefully');
       this.shutdown();
@@ -228,7 +209,6 @@ class App {
       });
     });
 
-    // Handle server errors
     server.on('error', (error: NodeJS.ErrnoException) => {
       if (error.syscall !== 'listen') {
         throw error;
