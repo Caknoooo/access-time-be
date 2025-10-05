@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction, Application } from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
@@ -31,7 +31,7 @@ if (!fs.existsSync('logs')) {
 }
 
 class App {
-  public app: Application;
+  public app: express.Application;
   private scanController: ScanController;
   private emailController: EmailController;
   private sampleController: SampleController;
@@ -70,7 +70,7 @@ class App {
 
     this.app.use(express.json({ 
       limit: '10mb',
-      verify: (req: Request, res: Response, buf: Buffer) => {
+      verify: (req: express.Request, res: express.Response, buf: Buffer) => {
         try {
           JSON.parse(buf.toString());
         } catch (e) {
@@ -81,7 +81,7 @@ class App {
     }));
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
+    this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
       const start = Date.now();
       res.on('finish', () => {
         const duration = Date.now() - start;
@@ -99,7 +99,7 @@ class App {
   }
 
   private initializeRoutes(): void {
-    this.app.get('/health', (req: Request, res: Response) => {
+    this.app.get('/health', (req: express.Request, res: express.Response) => {
       res.json({ 
         status: 'OK', 
         timestamp: new Date().toISOString(),
@@ -109,7 +109,7 @@ class App {
       });
     });
 
-    this.app.get('/api/events', (req: Request, res: Response) => {
+    this.app.get('/api/events', (req: express.Request, res: express.Response) => {
       try {
         res.writeHead(200, {
           'Content-Type': 'text/event-stream',
@@ -129,23 +129,23 @@ class App {
       }
     });
 
-    this.app.post('/api/scan', (req: Request, res: Response) => {
+    this.app.post('/api/scan', (req: express.Request, res: express.Response) => {
       this.scanController.scanHtml(req, res);
     });
 
-    this.app.get('/api/emails', (req: Request, res: Response) => {
+    this.app.get('/api/emails', (req: express.Request, res: express.Response) => {
       this.emailController.checkForEmails(req, res);
     });
 
-    this.app.get('/api/test-samples', (req: Request, res: Response) => {
+    this.app.get('/api/test-samples', (req: express.Request, res: express.Response) => {
       this.sampleController.getSamples(req, res);
     });
 
-    this.app.post('/api/test-samples', (req: Request, res: Response) => {
+    this.app.post('/api/test-samples', (req: express.Request, res: express.Response) => {
       this.sampleController.handleSampleAction(req, res);
     });
 
-    this.app.use('*', (req: Request, res: Response) => {
+    this.app.use('*', (req: express.Request, res: express.Response) => {
       logger.warn('Route not found', { method: req.method, url: req.originalUrl });
       res.status(404).json({ 
         error: 'Route not found',
@@ -156,7 +156,7 @@ class App {
   }
 
   private initializeErrorHandling(): void {
-    this.app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+    this.app.use((error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
       logger.error('Unhandled error', {
         error: error.message,
         stack: error.stack,
