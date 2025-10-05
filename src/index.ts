@@ -20,7 +20,7 @@ const logger = createLogger({
   ),
   defaultMeta: { service: 'access-time-backend' },
   transports: [
-    new transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new transports.File({ filename: 'logs/error.log' }),
     new transports.File({ filename: 'logs/combined.log' }),
     new transports.Console({
       format: format.combine(
@@ -80,11 +80,11 @@ class App {
     // Body parsing middleware
     this.app.use(express.json({ 
       limit: '10mb',
-      verify: (req, res, buf) => {
+      verify: (req: express.Request, res: express.Response, buf: Buffer) => {
         try {
           JSON.parse(buf.toString());
         } catch (e) {
-          logger.error('Invalid JSON payload', { error: e.message });
+          logger.error('Invalid JSON payload', { error: e instanceof Error ? e.message : 'Unknown error' });
           throw new Error('Invalid JSON');
         }
       }
@@ -92,7 +92,7 @@ class App {
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
     // Request logging middleware
-    this.app.use((req, res, next) => {
+    this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
       const start = Date.now();
       res.on('finish', () => {
         const duration = Date.now() - start;
@@ -137,7 +137,7 @@ class App {
           clientCount: this.emailListenerService.getActiveClientsCount() 
         });
       } catch (error) {
-        logger.error('SSE connection error', { error: error.message });
+        logger.error('SSE connection error', { error: error instanceof Error ? error.message : 'Unknown error' });
         res.status(500).json({ error: 'Failed to establish SSE connection' });
       }
     });
